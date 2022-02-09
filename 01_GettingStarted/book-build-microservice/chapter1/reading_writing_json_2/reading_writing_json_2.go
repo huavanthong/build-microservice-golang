@@ -36,13 +36,16 @@ func main() {
 // Normal case: Send one message
 func helloWorldHandler(w http.ResponseWriter, r *http.Request) {
 
+	// Create message response following member in struct.
 	response := helloWorldResponse{Message: "HelloWorld"}
 
+	// Convert to json by using Marshal
 	data, err := json.Marshal(response)
 	if err != nil {
 		panic("Ooops")
 	}
-
+	// Write(p []byte) (n int, err error) only accept bytes
+	// So we use Fprint to convert json to bytes.
 	fmt.Fprint(w, string(data))
 }
 
