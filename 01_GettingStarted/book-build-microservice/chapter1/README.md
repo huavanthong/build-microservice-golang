@@ -79,7 +79,7 @@ func helloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(data))
 }
 ```
-##### Is there any better way to send our data to the output stream without marshalling to a temporary object before we return it?  
+> Is there any better way to send our data to the output stream without marshalling to a temporary object before we return it?  
 The encoding/json package has a function called NewEncoder this returns us an Encoder object that can be used to write JSON straight to an open writer and guess what?  
 Using Encode  
 ```
