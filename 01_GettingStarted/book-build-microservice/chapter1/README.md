@@ -79,8 +79,9 @@ func helloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(data))
 }
 ```
-> Is there any better way to send our data to the output stream without marshalling to a temporary object before we return it?  
-The encoding/json package has a function called NewEncoder this returns us an Encoder object that can be used to write JSON straight to an open writer and guess what?  
+> Is there any better way to send our data to the output stream without marshalling to a temporary object before we return it?
+
+The encoding/json package has a function called NewEncoder this returns us an Encoder object that can be used to write JSON straight to an open writer and guess what? 
 Using Encode  
 ```
 func helloWorldHandler(w http.ResponseWriter, r *http.Request) {
@@ -94,6 +95,7 @@ func helloWorldHandler(w http.ResponseWriter, r *http.Request) {
 ```
 ### Unmarshalling-JSON-to-Go-structs
 > func Unmarshal(data []byte, v interface{}) error
+
 This function will allocate maps, slices, and pointers as required  
 #### HTML-request-format
 More detail at [here](https://github.com/huavanthong/MasterGolang/blob/main/01_GettingStarted/book-go-web-application/Chapter_4_Processing_Requests/README.md#HTML-Form)
