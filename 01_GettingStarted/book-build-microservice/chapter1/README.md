@@ -22,7 +22,7 @@ efficiently build a simple microservice.
 * [How to decode JSON request from client?](#Demo-Unmarshalling)
 * [Suppose you have a lot of images-css-js, how do you access it on golang?](#Static-file-handler)
 * [How to design a chain handler? Think about purpose for this design](#Creating-handlers)
-* 
+* [We get any trouble with HTTP Request? Why we need Context?](#Context)
 
 
 ## Build-web-server
@@ -223,9 +223,43 @@ Please distinct the handler and function handler.
 Refer, and read carefully for more details: **reading_writing_json_7**
 
 ## Context
+The problem with the previous pattern is that there is no way that you can pass the validated request from one handler to the next without breaking the http.Handler interface.  
+This is a reason, Golang provide Context for our problem.  
+The Context type implements a safe method for accessing request-scoped data that is safe to use simultaneously by multiple Go routines.  
+### Backgroud
+The Background method returns an empty context that has no values; it is typically used by the main function and as the toplevel Context.
+```
+func Background() Context
+```
+
+### WithCancel
+The WithCancel method returns a copy of the parent context with a cancel function, calling the cancel function releases resources associated with the context and should be called as soon as operations running in the Context type are complete:  
+```
+func WithCancel(parent Context) (ctx Context, cancel CancelFunc)
+```
+
+### WithDeadline
+The WithDeadline method returns a copy of the parent context that expires after the current time is greater than deadline. At this point, the context's Done channel is closed and the resources associated are released. It also passes back a CancelFunc method that allows manual cancellation of the context
+```
+func WithDeadline(parent Context, deadline time.Time) (Context, CancelFunc)
+```
+
+### WithTimeout
+The WithTimeout method is similar to WithDeadline except you pass it a duration for which the Context type should exist.  
+Once this duration has elapsed, the Done channel is closed and the resources associated with the context are released:
+```
+func WithTimeout(parent Context, timeout time.Duration) (Context, CancelFunc)
+```
+
+### WithValue
+The WithValue method returns a copy of the parent Context in which the val value is associated with the key.  
+The Context values are perfect to be used for request-scoped data:
+```
+func WithValue(parent Context, key interface{}, val interface{}) Context
+```
+
+### Using-contexts
 Refer: reading_writing_json_8
-Begin to deploy the actual golang project. This project will implement Golang following MVC model. 
-We will find the interesting feature, and integrate into this project.
 
 ## RPC
 Begin to deploy the actual golang project. This project will implement Golang following MVC model. 
