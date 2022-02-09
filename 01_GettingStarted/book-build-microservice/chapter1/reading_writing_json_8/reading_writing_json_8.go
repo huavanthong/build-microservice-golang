@@ -1,3 +1,4 @@
+// Please read to understand about reading_writing_json_7.go, and then we will investigate this part.
 package main
 
 import (
@@ -30,6 +31,9 @@ func main() {
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", port), nil))
 }
 
+/*************************************************************************************************/
+/* Handler 1: Validation
+/*************************************************************************************************/
 type validationHandler struct {
 	next http.Handler
 }
@@ -47,13 +51,19 @@ func (h validationHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, "Bad request", http.StatusBadRequest)
 		return
 	}
-
+	// Step 1: WithValue() method to get the parent Context and associated with key.
 	c := context.WithValue(r.Context(), validationContextKey("name"), request.Name)
+	// Step 2: The WithContext object returns a shallow copy of the original
+	// request which has the context changed to the given ctx context.
+	// It contains connection between client and server.
 	r = r.WithContext(c)
 
 	h.next.ServeHTTP(rw, r)
 }
 
+/*************************************************************************************************/
+/* Handler 2: Reply message response
+/*************************************************************************************************/
 type helloWorldHandler struct {
 }
 
@@ -62,13 +72,24 @@ func newHelloWorldHandler() http.Handler {
 }
 
 func (h helloWorldHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+
+	// Step 3: Valiadate request is correctly context by using Value() methods.
 	name := r.Context().Value(validationContextKey("name")).(string)
+
 	response := helloWorldResponse{Message: "Hello " + name}
 
 	encoder := json.NewEncoder(rw)
 	encoder.Encode(response)
 }
 
+/*************************************************************************************************
+Server manages the lifecycle of the context automatically cancelling it when the client
+connection closes. For outbound requests, Context controls cancellation, by this we mean that if
+we cancel the Context() method we can cancel the outgoing request
+
+func fetchGoogle(): find request to cancel that connection. This is a function running in background
+
+*************************************************************************************************/
 func fetchGoogle(t *testing.T) {
 	r, _ := http.NewRequest("GET", "https://google.com", nil)
 
