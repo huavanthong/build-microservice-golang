@@ -20,7 +20,10 @@ type Sometwhing struct{}
 func main() {
 	port := 8080
 
+	// Use FileServer to access to our asset.
+	// Note: Our Filesytem is started this application.
 	cathandler := http.FileServer(http.Dir("./images"))
+	// Use StripPrefix to remove the given prefix from the request URL's path and then invoking h handler
 	http.Handle("/cat/", http.StripPrefix("/cat/", cathandler))
 
 	http.HandleFunc("/helloworld", helloWorldHandler)
