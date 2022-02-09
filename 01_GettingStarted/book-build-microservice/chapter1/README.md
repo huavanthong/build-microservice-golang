@@ -37,9 +37,22 @@ It implements the simplistic Marshal and Unmarshal functions; however, if we nee
 
 ### Marshalling Go structs to JSON
 Json in Golang is powerful, we need to remember some feature for coding:
+* Change the output field to be "message"
+```
+    Message string `json:"message"`
+```
 * Do not ouput this field in struct.
+```
+    Author string `json:"-"`
+```
 * Do not output the field if the value is empty.
+```
+    Date string `json:",omitempty"`
+```
 * convert output to a string and rename "id".
+```
+    Id int `json:"id, string"`
+```
 
 ### Unmarshalling JSON to Go structs
 
