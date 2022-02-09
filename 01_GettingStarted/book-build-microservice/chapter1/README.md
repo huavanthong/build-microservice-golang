@@ -197,11 +197,11 @@ func TimeoutHandler(h Handler, dt time.Duration, msg string) Handler
 ```
 
 ### Static file handler
-Try to run reading_writing_json_5 to see problem:
+Try to run **reading_writing_json_5** to see problem:
 ```
 > http://localhost:8080/cat/cat.jpg.
 ```
-Now we run reading_writing_json_6 to see solution:
+Now we run **reading_writing_json_6** to see solution:
 ```
 > http://localhost:8080/cat/cat.jpg.
 ```
@@ -216,8 +216,10 @@ Please distinct the handler and function handler.
 * How to implement handler by pointer?
 * How to implement handler by value?
 * How to use chain handler?
+Refer, and read carefully for more details: **reading_writing_json_7**
 
 ## Context
+Refer: reading_writing_json_8
 Begin to deploy the actual golang project. This project will implement Golang following MVC model. 
 We will find the interesting feature, and integrate into this project.
 
