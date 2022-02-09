@@ -212,9 +212,11 @@ http.Handle("/cat/", http.StripPrefix("/cat/", cathandler))
 ```
 ### Creating handlers
 How to create handler. More detail refer: [here](https://github.com/huavanthong/MasterGolang/tree/main/01_GettingStarted/book-go-web-application/Chapter_3_Handling_Requests/handler)
-```
+Please distinct the handler and function handler.
+* How to implement handler by pointer?
+* How to implement handler by value?
+* How to use chain handler?
 
-```
 ## Context
 Begin to deploy the actual golang project. This project will implement Golang following MVC model. 
 We will find the interesting feature, and integrate into this project.
