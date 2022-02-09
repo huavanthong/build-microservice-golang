@@ -20,6 +20,9 @@ efficiently build a simple microservice.
 * [what if we need to read input before returning the output?](#Unmarshalling-JSON-to-Go-structs)
 * [What is format data of HTML Request](https://github.com/huavanthong/MasterGolang/blob/main/01_GettingStarted/book-go-web-application/Chapter_4_Processing_Requests/README.md#HTML-Form)
 * [How to decode JSON request from client?](#Demo-Unmarshalling)
+* [Suppose you have a lot of images-css-js, how do you access it on golang?](#Static-file-handler)
+* [How to design a chain handler? Think about purpose for this design](#Creating-handlers)
+* 
 
 
 ## Build-web-server
@@ -152,7 +155,8 @@ There are two functions to adding handlers to a ServerMux handler:
 > func HandlerFunc(pattern string, handler func(ResponseWriter, *Request))
 - Handler
 > func Handle(pattern string, handler Handler)
-More details: [here](https://www.meisternote.com/app/note/tIRDBorhiJSC/3-3-handlers-and-handler-functions)
+
+**More details:** [here](https://www.meisternote.com/app/note/tIRDBorhiJSC/3-3-handlers-and-handler-functions)
 
 ### Paths
 ServeMux is responsible for routing inbound requests to the registered handlers.  
@@ -196,7 +200,7 @@ The TimeoutHandler function returns a Handler interface that runs h with the giv
 func TimeoutHandler(h Handler, dt time.Duration, msg string) Handler
 ```
 
-### Static file handler
+### Static-file-handler
 Try to run **reading_writing_json_5** to see problem:
 ```
 > http://localhost:8080/cat/cat.jpg.
@@ -210,7 +214,7 @@ Success due to some code below:
 cathandler := http.FileServer(http.Dir("./images"))
 http.Handle("/cat/", http.StripPrefix("/cat/", cathandler))
 ```
-### Creating handlers
+### Creating-handlers
 How to create handler. More detail refer: [here](https://github.com/huavanthong/MasterGolang/tree/main/01_GettingStarted/book-go-web-application/Chapter_3_Handling_Requests/handler)
 Please distinct the handler and function handler.
 * How to implement handler by pointer?
