@@ -66,7 +66,7 @@ func (h validationHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, "Bad request", http.StatusBadRequest)
 		return
 	}
-
+	// From h - validation handler, pass ResponseWriter, Request to Validation Handler.
 	h.next.ServeHTTP(rw, r)
 }
 
