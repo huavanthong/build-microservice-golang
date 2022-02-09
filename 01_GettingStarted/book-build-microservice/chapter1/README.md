@@ -23,7 +23,6 @@ efficiently build a simple microservice.
 
 
 ## Build-web-server
-
 This example is putting in basic_http_server.
 To run this example:  
 ```
@@ -79,9 +78,8 @@ func helloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(data))
 }
 ```
-> Is there any better way to send our data to the output stream without marshalling to a temporary object before we return it?
-
-The encoding/json package has a function called NewEncoder this returns us an Encoder object that can be used to write JSON straight to an open writer and guess what? 
+##### Is there any better way to send our data to the output stream without marshalling to a temporary object before we return it?  
+The encoding/json package has a function called NewEncoder this returns us an Encoder object that can be used to write JSON straight to an open writer and guess what?  
 Using Encode  
 ```
 func helloWorldHandler(w http.ResponseWriter, r *http.Request) {
@@ -97,6 +95,7 @@ func helloWorldHandler(w http.ResponseWriter, r *http.Request) {
 > func Unmarshal(data []byte, v interface{}) error
 
 This function will allocate maps, slices, and pointers as required  
+
 #### HTML-request-format
 More detail at [here](https://github.com/huavanthong/MasterGolang/blob/main/01_GettingStarted/book-go-web-application/Chapter_4_Processing_Requests/README.md#HTML-Form)
 * io.ReadCloser as a stream and does not return a []byte or a string
@@ -112,6 +111,7 @@ type Requests struct {
     ...
 }
 ```
+
 #### Demo-Unmarshalling
 ```
 func helloWorldHandler(w http.ResponseWriter, r *http.Request) {
@@ -140,10 +140,82 @@ func helloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	encoder.Encode(response)
 }
 ```
-## Routing
-Summary all projects reference from other resource on website.
 
-## GolangProject
+## Routing
+Even a simple microservice will need the capability to route requests to different handlers dependent on the requested path or
+method.
+- In Go this is handled by the DefaultServeMux method which is an instance of ServerMux.
+- When we call the http.HandleFunc("/helloworld", helloWorldHandler) package function we are actually just indirectly calling http.DefaultServerMux.HandleFunc(…).
+
+There are two functions to adding handlers to a ServerMux handler:
+- Function handler
+> func HandlerFunc(pattern string, handler func(ResponseWriter, *Request))
+- Handler
+> func Handle(pattern string, handler Handler)
+More details: [here](https://www.meisternote.com/app/note/tIRDBorhiJSC/3-3-handlers-and-handler-functions)
+
+### Paths
+ServeMux is responsible for routing inbound requests to the registered handlers.  
+Refer: Architecture for ServeMux in Go-web-application [book](https://www.meisternote.com/app/note/B6NG-U69TSGK/3-2-serving-go).
+```
+http.Handle("/images/", newFooHandler())
+http.Handle("/images/persian/", newBarHandler())
+http.Handle("/images", newBuzzHandler())
+```
+### Convenience handlers
+```
+?
+```
+### FileServer
+To map the contents of the file system path ./images to the server route /images, Dir implements a file system which is restricted to a specific directory tree, the FileServer method uses this to be able to serve the assets.
+```
+http.Handle("/images", http.FileServer(http.Dir("./images")))
+```
+
+### NotFoundHandler
+The NotFoundHandler function returns a simple request handler that replies to each request with a 404 page not found reply:
+```
+func NotFoundHandler() Handler
+```
+
+### RedirectHandler
+To redirect to another handler
+```
+func RedirectHandler(url string, code int) Handler
+```
+
+### StripPrefix
+The StripPrefix function returns a handler that serves HTTP requests by removing the given prefix from the request URL's path and then invoking h handler. If a path does not exist, then StripPrefix will reply with an HTTP 404 not found error:
+```
+func StripPrefix(prefix string, h Handler) Handler
+```
+
+### TimeoutHandler
+The TimeoutHandler function returns a Handler interface that runs h with the given time limit. When we investigate common patterns in Chapter 6, Microservice Frameworks, we will see just how useful this can be for avoiding cascading failures in your service:
+```
+func TimeoutHandler(h Handler, dt time.Duration, msg string) Handler
+```
+
+### Static file handler
+Try to run reading_writing_json_5 to see problem:
+```
+> http://localhost:8080/cat/cat.jpg.
+```
+Now we run reading_writing_json_6 to see solution:
+```
+> http://localhost:8080/cat/cat.jpg.
+```
+Success due to some code below:
+```
+cathandler := http.FileServer(http.Dir("./images"))
+http.Handle("/cat/", http.StripPrefix("/cat/", cathandler))
+```
+### Creating handlers
+How to create handler. More detail refer: [here](https://github.com/huavanthong/MasterGolang/tree/main/01_GettingStarted/book-go-web-application/Chapter_3_Handling_Requests/handler)
+```
+
+```
+## Context
 Begin to deploy the actual golang project. This project will implement Golang following MVC model. 
 We will find the interesting feature, and integrate into this project.
 
