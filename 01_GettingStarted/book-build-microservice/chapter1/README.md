@@ -23,6 +23,11 @@ efficiently build a simple microservice.
 * [Suppose you have a lot of images-css-js, how do you access it on golang?](#Static-file-handler)
 * [How to design a chain handler? Think about purpose for this design](#Creating-handlers)
 * [We get any trouble with HTTP Request? Why we need Context?](#Context)
+* [What is RPC?](#RPC)
+* [What is the default protocol in your DefaultServeMux ? Could you choose another protocol?](#Protocol)
+* [Demo a example about RPC to understand the work flow](#Simple-RPC-example)
+* [What problem if multiple client access to server?](#Server)
+* [How client make message to server without use HTTP protocol (meaning that don't use Brower)?](#Client)
 
 
 ## Build-web-server
@@ -262,5 +267,95 @@ func WithValue(parent Context, key interface{}, val interface{}) Context
 Refer: reading_writing_json_8
 
 ## RPC
-Begin to deploy the actual golang project. This project will implement Golang following MVC model. 
-We will find the interesting feature, and integrate into this project.
+Remote Procedure Call(RPC) in Operating System is a powerful technique for constructing distributed, client-server based applications.  
+More details: [here](https://www.geeksforgeeks.org/remote-procedure-call-rpc-in-operating-system/)  
+
+### Protocol
+Firstly, we need to know about architecture of protocol: [here](#https://www.digitalocean.com/community/tutorials/http-1-1-vs-http-2-what-s-the-difference)  
+And you know that the data will transfer to internet through 4 layer:  
+* Application Layer (HTTP)
+* Transport Layer (TCP)
+* Network Layer (IP)
+* Data Link Layer
+Until the current ponint, we don't know that what protocol does DefaultServeMux use?  
+However, we know DefaultServeMux use HTTP protocol.  
+  
+When you use RPC standard:
+* you can select your protocol such as: tcp, tcp4, tcp6, unix, or unixpacket.
+* you also using a given protocol and binding it to IP as same as DefaultServeMux [demo](#https://github.com/huavanthong/build-microservice-golang/blob/feature/chapter1/01_GettingStarted/book-build-microservice/chapter1/basic_http_server/basic_http_server.go)
+
+### Simple-RPC-example
+#### Server
+To register a handler into server in RPC API.
+```
+	helloWorld := &HelloWorldHandler{}
+	rpc.Register(helloWorld)
+```
+
+To make server listen client.
+```
+l, err := net.Listen("("tcp",", fmt.Sprintf(":%(":%v",", port))
+```
+
+To accept an connection between client and server, and block to wait client complete
+```
+	for {
+		conn, _ := l.Accept()
+			go rpc.ServeConn(conn)
+		}
+	}
+```
+
+#### Client
+How client can connect to server without HTTP protocol?
+```
+	client, err := rpc.Dial("tcp", fmt.Sprintf("localhost:%v", port))
+```
+
+to make an request from Client
+```
+	err := client.Call("HelloWorldHandler.HelloWorld", args, &reply)
+```
+
+### RPC over HTTP
+As you know, Simple-RPC-example is a example about communication between client and server without HTTP Protocol.
+Right now, how we can implement application using HTTP by RPC.
+
+#### Server
+To make RPC over HTTP
+```
+	helloWorld := &HelloWorldHandler{}
+	rpc.Register(helloWorld)
+	rpc.HandleHTTP()
+```
+
+And then, we need HTTP serve our server
+```
+	l, err := net.Listen("("tcp",", fmt.Sprintf(":%(":%v",", port))
+	http.Serve(l, nil)
+```
+
+#### Client
+To make connection through HTTP.
+```
+	client, err := rpc.DialHTTP("tcp", fmt.Sprintf("localhost:%v", port))
+```
+
+### JSON-RPC over HTTP
+Have you ever put a question that how we can communicate by JSON?  
+
+#### Server
+To create json on handler
+```
+	serverCodec := jsonrpc.NewServerCodec(&HttpConn{in: r.Body, out: w})
+```
+
+#### Client
+To create an request by json
+```
+	r, _ := http.Post(
+		"http://localhost:1234",
+		"application/json",
+		bytes.NewBuffer([]byte(`{"id": 1, "method": "HelloWorldHandler.HelloWorld", "params": [{"name":"World"}]}`)),
+	)
+```
