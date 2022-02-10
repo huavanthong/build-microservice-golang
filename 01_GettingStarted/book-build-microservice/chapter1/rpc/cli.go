@@ -3,16 +3,25 @@ package main
 import (
 	"fmt"
 
-	"github.com/building-microservices-with-go/chapter1/rpc/client"
-	"github.com/building-microservices-with-go/chapter1/rpc/server"
+	"chapter1/rpc/client"
+	"chapter1/rpc/server"
 )
 
 func main() {
+	// Create a routine to start server.
 	go server.StartServer()
 
-	c := client.CreateClient()
-	defer c.Close()
+	// Create multiple client to server instead of a client communicate to server.
+	for i := 0; i < 10; i++ {
+		// Boom: Ngay tại đây, là cách mà nó connect server nè cha ơi !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		c := client.CreateClient()
+		// Close connect to server
+		defer c.Close()
 
-	reply := client.PerformRequest(c)
-	fmt.Println(reply.Message)
+		// Client make a request
+		reply := client.PerformRequest(c)
+
+		fmt.Println(reply.Message)
+	}
 }
