@@ -67,7 +67,7 @@ can be mounted either from the host running the Docker machine or from another D
 The -v, or --volume parameter allows you to specify a pair of values corresponding to the file system you wish to mount on the host and the path where you would like to mount the volume inside the container.
 * -v hostfolder:destinationfolder: volumne hostfolder to destination folder by syntax
 ```
-chapter3>docker run -it -v host alpine:latest /bin/sh
+$ docker run -it -v host alpine:latest /bin/sh
 / #
 ```
 **Note:**  
@@ -82,7 +82,7 @@ chapter3>docker run -it -v host alpine:latest /bin/sh
 
 To check how many networks on Docker
 ```
->docker network ls
+$ docker network ls
 NETWORK ID     NAME                                  DRIVER    SCOPE
 988362ff75ec   07_docker-compose-go-nodejs_default   bridge    local
 10b2e3d8d242   bridge                                bridge    local
@@ -94,7 +94,7 @@ NETWORK ID     NAME                                  DRIVER    SCOPE
  
 To create a bridge network
 ```
->docker network create testnetwork
+$ docker network create testnetwork
 ```
 ### Host-networking
  
