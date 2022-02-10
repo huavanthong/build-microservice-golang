@@ -16,10 +16,11 @@ Normally, we will build image with Docker, so to build it:
 ```
 $ docker build -t hello-world .
 ```
-However, if you don't build, and want to run directly, it connects to the default registry, in this case, https://hub.docker.com/ to retrieve it.  
+However, if you don't build, and want to run directly, it connects to the default registry, in this case, https://hub.docker.com/ to retrieve it. 
+Because there are many images with open-source on Docker-Hub, to see it: [here](https://hub.docker.com/search?type=image)  
 That is a reason why we get the below message:
 ```
-chapter3>docker run --rm hello-world
+$ docker run --rm hello-world
 Unable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
 2db29710123e: Pull complete
@@ -34,6 +35,7 @@ This message shows that your installation appears to be working correctly.
 To run image on Docker from **Docker Hub**.  
 **Note:**  
 - Please sign in Docker Hub from brower and execute cmd below.
+- The below command is executed on image hell-world with open-source. We can refer [here](https://hub.docker.com/_/hello-world) to see it
 ```
 $ docker run --rm hello-world
 ```
