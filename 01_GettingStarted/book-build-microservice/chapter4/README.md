@@ -42,3 +42,17 @@ OK, so I am trying to be funny, but the concept is correct:
 ## Behavirol-Driven
 
 ## Testing-Docker-compose
+### Prepare environment
+If you want to run this project, please prepare tools following steps below:
+#### Make
+Install Make for Windows.
+```
+winget install gnuwin32.make
+```
+
+And remember to set PATH for your environment
+```
+path to: C:\Program Files (x86)\GnuWin32\bin
+```
+Refer: [here](https://www.technewstoday.com/install-and-use-make-in-windows/)
+#### 
