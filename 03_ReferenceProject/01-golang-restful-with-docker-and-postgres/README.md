@@ -109,3 +109,16 @@ Delete one user with the given Id (Need To Use DELETE method)
 ```
       http://127.0.0.1:3000/users/1
 ```
+## Issue knowledge
+### Issue 1:
+when you run docker compose for this project. You get a error
+```
+=> ERROR [3/8] RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+> gnupg, gnupg2 and gnupg1 do not seem to be installed, but one of them is required for this operation
+
+```
+To fix it: refer [here](https://stackoverflow.com/questions/50757647/e-gnupg-gnupg2-and-gnupg1-do-not-seem-to-be-installed-but-one-of-them-is-requ)
+```
+apt-get update && apt-get install -y gnupg
+```
+### Issue 2:
