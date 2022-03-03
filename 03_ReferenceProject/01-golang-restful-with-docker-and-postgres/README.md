@@ -1,9 +1,18 @@
-# Description
+# Introduction
+This project is refered from [here](https://github.com/fatihtotrakanli/simple-golang-restful-with-docker-and-postgres)  
+
+# Table of Contents
+1. Restful API for simple database.
+2. Docker Compose for PostgreSQL.
+3. Dockerfile for PostgreSQL.
+4. Database access configuration inside code
+
+# Questions
+## Description
 
 This project is a *Go language* learning project with simple RestFul services. It uses postgres db inside with docker-compose. You can compose with dockerfile or create your own postgres database without it. 
 
 For run docker-compose, you need to write following commands. In your project folder,
-
 ```
       cd docker
       docker-compose up
@@ -20,7 +29,7 @@ For more information about it,
 
 [Dockerize PostgreSQL](https://docs.docker.com/engine/examples/postgresql_service/#connecting-from-your-host-system)
 
-# Database table configuration
+## Database table configuration
 ```
       CREATE TABLE USERS (
         ID INT PRIMARY KEY,
@@ -34,7 +43,7 @@ For more information about it,
       ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 ```
 
-# Database access configuration inside code 
+## Database access configuration inside code 
 Under config/config.go directory in the project, you will find database access configuration. You can change it with your custom configuration.
 ```
       DB_USER     = "docker"
@@ -42,7 +51,7 @@ Under config/config.go directory in the project, you will find database access c
       DB_NAME     = "docker"
       PORT = "32770"
 ```
-# How can run?
+## How can run?
 
 First of all, you need to have *Go* in your computer. For Mac you can install with brew easily.
 
@@ -72,7 +81,7 @@ If everything works correctly, you can start the CRUD operations with following 
       http://127.0.0.1:3000
 ```
 
-# URL's and Example
+## URL's and Example
 
 List all of user (Need To Use GET method)
 ```
