@@ -215,6 +215,19 @@ And remember to set PATH for your environment
 path to: C:\Program Files (x86)\GnuWin32\bin
 ```
 Refer: [here](https://www.technewstoday.com/install-and-use-make-in-windows/)
+### MGO
+To install mgo
+```
+go get gopkg.in/mgo.v2 
+```
+
+Add library to go.mod
+```
+require(
+    gopkg.in/mgo.v2
+)
+```
+More details: [here](https://github.com/tobyzxj/mgo)
 ### Cucumber
 #### Install Godog
 To install Cucumber (godog) package
