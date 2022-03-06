@@ -91,7 +91,7 @@ Our unit tests go right down to the bottom of the pyramid.
 * **Third law:**  You may not write more production code than is sufficient to pass the currently failing test
 
 **Note:**
-- Production code: Production means anything that you need to work reliably, and consistently.
+- Production code: Production means anything that you need to work reliably, and consistently.  
 Refer: [here](https://stackoverflow.com/questions/490289/what-exactly-defines-production)
 ### Ideas 
 One of the most effective ways to test a microservice in Go is not to fall into the trap of trying to execute all the tests through the HTTP interface.  
@@ -130,7 +130,7 @@ For a example:
 - Should: Test1Handler
 - Should: TestMyHandler
 - Recommend: Test1MyHandler
-- Recommend: Test1SearchHandlerReturnsBadRequestWhenNoSearchCriteriaIsSent
+- Recommend: TestSearchHandlerReturnsBadRequestWhenNoSearchCriteriaIsSent
 
 ## Dependency injection and mocking
 To get the tests that return items from the Search handler to pass, we are going to need a data store. Whether we implement our
@@ -194,6 +194,16 @@ go test -cover ./...
 # How to run
 ## Prepare environment
 If you want to run this project, please prepare tools following steps below:
+### Golang
+To install Golang
+```
+
+```
+Check GOPATH is existent on your ennvironment
+```
+$echo %GOPATH%
+C:\Go\bin
+```
 ### Make
 Install Make for Windows.
 ```
@@ -210,4 +220,23 @@ To install Cucumber (godog) package
 ```
 go get github.com/DATA-DOG/godog/cmd/godog
 ```
+
+Export PATH point to GOLANG environment
+```
+#=============== Linux ===================#
+# the executable is here after installation
+# $GOPATH/bin/godog
+export PATH=$PATH:$GOPATH/bin
+
+#=============== Window ===================#
+set PATH=%PATH%;%GOPATH%
+
+```
+
+To check godog.exe is exist in your environment
+```
+# godog.exe is in directory C:\Go\bin
+C:\Go\bin\godog.exe
+```
+More details: [here](https://techblog.fexcofts.com/2019/08/09/go-and-test-cucumber/)
 
