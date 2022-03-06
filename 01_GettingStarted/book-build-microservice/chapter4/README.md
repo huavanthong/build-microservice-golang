@@ -238,7 +238,7 @@ go get github.com/DATA-DOG/godog/cmd/godog
 Add library to go.mod
 ```
 require(
-    gopkg.in/mgo.v2
+    gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
     github.com/cucumber/godog v0.12.4
 )
 ```
@@ -274,7 +274,32 @@ To fix it.
 > go get github.com/cucumber/godog/cmd/godog
 
 More details: [here](https://github.com/cucumber/godog/issues/211)
+##### Issue 2: Wrong path to working godog
 
+**Behavior:**When you run command cucumber in Makefile
+```
+make cucumber
+```
+
+**Error:** You will see error below:
+```
+- Container chapter4-mongodb-1  Running                                                                                                                                                                                                0.0s
+cd features && godog ./
+failed to compile tested package: C:\01_Work\01_Programming\build-microservice-golang\01_GettingStarted\book-build-microservice\chapter4\features, reason: exit status 1, output: WORK=C:\Users\huava\AppData\Local\Temp\go-build013581706
+# docker-compose/features
+search_test.go:14:2: import "github.com/cucumber/godog/cmd/godog" is a program, not an importable package
+FAIL    docker-compose/features [setup failed]
+
+make: *** [cucumber] Error 1
+```
+**Solution:**
+```
+Change command from Makefile.
+From:
+    cd features && godog ./
+To: 
+    cd godog ./
+```
 #### Run godog
 To run this godog for this project
 ```
