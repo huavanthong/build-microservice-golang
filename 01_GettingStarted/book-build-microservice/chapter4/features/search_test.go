@@ -10,8 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/DATA-DOG/godog"
-	"github.com/building-microservices-with-go/chapter4/data"
+	"github.com/cucumber/godog/cmd/godog"
 )
 
 var criteria interface{}

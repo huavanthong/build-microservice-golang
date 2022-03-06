@@ -216,11 +216,20 @@ path to: C:\Program Files (x86)\GnuWin32\bin
 ```
 Refer: [here](https://www.technewstoday.com/install-and-use-make-in-windows/)
 ### Cucumber
+#### Install Godog
 To install Cucumber (godog) package
 ```
 go get github.com/DATA-DOG/godog/cmd/godog
 ```
 
+Add library to go.mod
+```
+require(
+    gopkg.in/mgo.v2
+    github.com/cucumber/godog v0.12.4
+)
+```
+#### Set environment
 Export PATH point to GOLANG environment
 ```
 #=============== Linux ===================#
@@ -232,11 +241,30 @@ export PATH=$PATH:$GOPATH/bin
 set PATH=%PATH%;%GOPATH%
 
 ```
-
+#### Folder contain godog library
 To check godog.exe is exist in your environment
 ```
 # godog.exe is in directory C:\Go\bin
 C:\Go\bin\godog.exe
 ```
 More details: [here](https://techblog.fexcofts.com/2019/08/09/go-and-test-cucumber/)
+
+
+#### Issue knowledge when download
+##### Issue 1: wrong link to download
+> go get github.com/DATA-DOG/godog/cmd/godog
+```
+module declares its path as: github.com/cucumber/godog
+                but was required as: github.com/DATA-DOG/godog
+```
+To fix it.
+> go get github.com/cucumber/godog/cmd/godog
+
+More details: [here](https://github.com/cucumber/godog/issues/211)
+
+#### Run godog
+To run this godog for this project
+```
+godog ./
+```
 
