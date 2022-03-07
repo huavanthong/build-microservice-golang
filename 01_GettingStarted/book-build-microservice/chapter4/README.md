@@ -353,8 +353,8 @@ docker-compose stop
 [+] Running 1/1
  - Container chapter4-mongodb-1  Stopped
 ```
-#### How to run
-To run this docker-compose.
+#### Start server
+To start this server with docker-compose.
 ```
 chapter4>make run
 docker-compose up -d
@@ -362,6 +362,7 @@ docker-compose up -d
  - Container chapter4-mongodb-1  Running                                                                                                                                                      0.0s 
 go run main.go
 ```
+#### How to run
 
 
 #### Issue knowledge
@@ -393,6 +394,126 @@ chapter4>taskkill /F /PID 276
 SUCCESS: The process with PID 276 has been terminated.
 ```
 To see the setting port. Refer: [here](https://github.com/huavanthong/build-microservice-golang/blob/docker-postgre/01_GettingStarted/book-build-microservice/chapter4/main.go)
+
+### Testing
+#### Unit Test
+To run Unit Test
+```
+make unit
+```
+
+Output
+```
+go test -race -v ./...
+testing: warning: no tests to run
+PASS
+ok      docker-compose  (cached) [no tests to run]
+?       docker-compose/benchmark        [no test files]
+# docker-compose/benchmark/loadtest
+benchmark\loadtest\main.go:29:16: not enough arguments in call to bench.New
+        have (number, time.Duration, time.Duration, time.Duration)
+        want (bool, int, time.Duration, time.Duration, time.Duration)
+note: module requires Go 1.16
+=== RUN   TestReturns1KittenWhenSearchGarfield
+--- PASS: TestReturns1KittenWhenSearchGarfield (0.00s)
+=== RUN   TestReturns0KittenWhenSearchTom
+--- PASS: TestReturns0KittenWhenSearchTom (0.00s)
+PASS
+ok      docker-compose/data     (cached)
+
+No scenarios
+No steps
+0s
+ok      docker-compose/features 1.578s
+=== RUN   TestSearchHandlerReturnsBadRequestWhenNoSearchCriteriaIsSent
+--- PASS: TestSearchHandlerReturnsBadRequestWhenNoSearchCriteriaIsSent (0.00s)
+=== RUN   TestSearchHandlerReturnsBadRequestWhenBlankSearchCriteriaIsSent
+--- PASS: TestSearchHandlerReturnsBadRequestWhenBlankSearchCriteriaIsSent (0.00s)
+=== RUN   TestSearchHandlerCallsDataStoreWithValidQuery
+    search_test.go:42: PASS:    Search(string)
+--- PASS: TestSearchHandlerCallsDataStoreWithValidQuery (0.00s)
+=== RUN   TestSearchHandlerReturnsKittensWithValidQuery
+--- PASS: TestSearchHandlerReturnsKittensWithValidQuery (0.00s)
+PASS
+ok      docker-compose/handlers (cached)
+make: *** [unit] Error 2
+```
+
+#### Cucumber Test
+To run Cucumber testing
+```
+make test
+```
+
+Output
+```
+go test -race -v ./...
+# docker-compose/benchmark/loadtest
+benchmark\loadtest\main.go:29:16: not enough arguments in call to bench.New
+        have (number, time.Duration, time.Duration, time.Duration)
+        want (bool, int, time.Duration, time.Duration, time.Duration)
+note: module requires Go 1.16
+testing: warning: no tests to run
+PASS
+ok      docker-compose  1.636s [no tests to run]
+?       docker-compose/benchmark        [no test files]
+=== RUN   TestReturns1KittenWhenSearchGarfield
+--- PASS: TestReturns1KittenWhenSearchGarfield (0.00s)
+=== RUN   TestReturns0KittenWhenSearchTom
+--- PASS: TestReturns0KittenWhenSearchTom (0.00s)
+PASS
+ok      docker-compose/data     1.247s
+
+No scenarios
+No steps
+1.0002ms
+ok      docker-compose/features 1.890s
+=== RUN   TestSearchHandlerReturnsBadRequestWhenNoSearchCriteriaIsSent
+--- PASS: TestSearchHandlerReturnsBadRequestWhenNoSearchCriteriaIsSent (0.00s)
+=== RUN   TestSearchHandlerReturnsBadRequestWhenBlankSearchCriteriaIsSent
+--- PASS: TestSearchHandlerReturnsBadRequestWhenBlankSearchCriteriaIsSent (0.00s)
+=== RUN   TestSearchHandlerCallsDataStoreWithValidQuery
+    search_test.go:42: PASS:    Search(string)
+--- PASS: TestSearchHandlerCallsDataStoreWithValidQuery (0.00s)
+=== RUN   TestSearchHandlerReturnsKittensWithValidQuery
+--- PASS: TestSearchHandlerReturnsKittensWithValidQuery (0.00s)
+PASS
+ok      docker-compose/handlers 1.430s
+make: *** [unit] Error 2
+
+```
+
+#### Issue knowledge when compiler
+##### Issue 1: Wrong MINGW compiler architecture
+**Behavior:** When you run test
+```
+make unit 
+or 
+make test
+```
+
+**Error:** You will see error below:
+```
+chapter4> make unit
+go test -race -v ./...
+# runtime/cgo
+cc1.exe: sorry, unimplemented: 64-bit mode not compiled in
+FAIL    docker-compose [build failed]
+FAIL    docker-compose/data [build failed]
+FAIL    docker-compose/features [build failed]
+FAIL    docker-compose/handlers [build failed]
+make: *** [unit] Error 2
+```
+
+**Solution:** Please install correct MINGW architecture x64 bit
+```
+Step 1: Download x86_64-win32-seh at link
+> https://sourceforge.net/projects/mingw-w64/files/
+
+Step 2: Add to folder C:\MINGIW
+
+Step 3: Add path to C:\MinGW\mingw64\bin
+```
 ### Benchmarks
 To run benchmark
 ```
