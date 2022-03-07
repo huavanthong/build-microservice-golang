@@ -26,7 +26,7 @@ OK, so I am trying to be funny, but the concept is correct:
 * [Behavioral Driven Development](#behavirol-driven-development)
 * [Testing with Docker compose](#Testing-Docker-compose)
 * [Benchmarking and profiling](#benchmarking-and-profiling)
-* [How to run this project](#how-to-run)
+* [How to run this project](#prepare-environment)
 
 # Questions
 ## About the testing pyramid
@@ -57,14 +57,25 @@ OK, so I am trying to be funny, but the concept is correct:
 * [What is BBD?](#what-is-bbd)
 * [How do you run Cucumber on this project?](#how-to-run-cucumber)
 
-# Getting Started
+## About Testing with Docker compose
+* [What is Docker compose?](#docker-compose)
+* [Why this project can't see Dockerfile?](#why-it-lack-of-dockerfile)
+* [How to run docker compose?](#run-with-docker-compose)
+* [Do you understand about work-flow happened if you run command docker-compose up or not?](#run-with-docker-compose)
+
+## About Benchmarking and profiling
+* [What is benchmark tool?](#benchmarking-and-profiling)
+* [How do you make sure the result measurement is correct?](#how-to-make-sure-that-the-result-of-measurement-is-correct)
+* [How do you run benchmark tool with this project?](#benchmarks)
+
+**********************************************************************************************************************************
 ## The testing pyramid
 ### Model pyramid
-**************************  
-*********   UI   *********  
-*****     Service    *****  
-***        Unit        ***  
-**************************  
+> **************************  
+> *********   UI   *********  
+> *****     Service    *****  
+> ***        Unit        ***  
+> **************************  
 * Unit test: Implement to detect error on your design.
 * Service: where you define a flow service in your application.
 * UI: where user will use your applicaiton, and detect error.
@@ -96,12 +107,12 @@ Refer: [here](https://stackoverflow.com/questions/490289/what-exactly-defines-pr
 ### Ideas 
 One of the most effective ways to test a microservice in Go is not to fall into the trap of trying to execute all the tests through the HTTP interface.  
 **Follow steps:**
-1. **Step 1:** Create a pattern for test program  
+**Step 1:** Create a pattern for test program  
     - We need develop **a pattern that avoids** creating a physical web server for testing our handlers, the code to create this kind of test is slow to run and incredibly tedious to write.
-2. **Step 2:** Implement Unit test
+**Step 2:** Implement Unit test
     - What need to be doing is to test our handlers and the code within them as **Unit test**. 
     - These tests will run far quicker than testing through the web server.
-3. **Step 3:** Get coverage.
+**Step 3:** Get coverage.
     - And if we think about coverage, we will be able to test the writing of the handlers in the **Cucumber** tests that execute a request to the running server which overall gives us 100% coverage of our code.
 ### Project Structure
 ```
@@ -187,14 +198,36 @@ go test -cover ./...
 * Behavioral Driven Development (BDD) and is a technique often executed by an application framework called Cucumber.
 * It was developed by Dan North and was designed to create a common ground between developers and product owners.
 
-## Testing-Docker-compose
+## Testing Docker compose
+If you investigate this project, you will know that this project don't has any Dockerfile for this chapter 4.
+The question, we need to anwer is why this project don't need it?
+### Why it lack of Dockerfile
 
+### Docker compose
+docker-compose.yml
+```
+version: '2'
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+
+```
 ## Benchmarking and profiling
+Benchmarking is a way of measuring the performance of your code by executing it multiple times with a fixed workload. 
 
-# How to run
-## Prepare environment
+### How to make sure that the result of measurement is correct
+When running a benchmark, Go needs to run it multiple times to get an accurate reason.  
+Therefore, we need to loop your service.
+```
+  for n := 0; n < b.N; n++
+```
+
+**********************************************************************************************************************************
+# Prepare environment
 If you want to run this project, please prepare tools following steps below:
-### Golang
+## Golang
 To install Golang
 ```
 
@@ -204,7 +237,7 @@ Check GOPATH is existent on your ennvironment
 $echo %GOPATH%
 C:\Go\bin
 ```
-### Make
+## Make
 Install Make for Windows.
 ```
 winget install gnuwin32.make
@@ -215,7 +248,7 @@ And remember to set PATH for your environment
 path to: C:\Program Files (x86)\GnuWin32\bin
 ```
 Refer: [here](https://www.technewstoday.com/install-and-use-make-in-windows/)
-### MGO
+## MGO
 To install mgo
 ```
 go get gopkg.in/mgo.v2 
@@ -228,8 +261,8 @@ require(
 )
 ```
 More details: [here](https://github.com/tobyzxj/mgo)
-### Cucumber
-#### Install Godog
+## Cucumber
+### Install Godog
 To install Cucumber (godog) package
 ```
 go get github.com/DATA-DOG/godog/cmd/godog
@@ -242,7 +275,7 @@ require(
     github.com/cucumber/godog v0.12.4
 )
 ```
-#### Set environment
+### Set environment
 Export PATH point to GOLANG environment
 ```
 #=============== Linux ===================#
@@ -254,7 +287,7 @@ export PATH=$PATH:$GOPATH
 set PATH=%PATH%;%GOPATH%
 
 ```
-#### Folder contain godog library
+### Folder contain godog library
 To check godog.exe is exist in your environment
 ```
 # godog.exe is in directory C:\Go\bin
@@ -263,8 +296,8 @@ C:\Go\bin\godog.exe
 More details: [here](https://techblog.fexcofts.com/2019/08/09/go-and-test-cucumber/)
 
 
-#### Issue knowledge when download
-##### Issue 1: wrong link to download
+### Issue knowledge when download
+#### Issue 1: wrong link to download
 > go get github.com/DATA-DOG/godog/cmd/godog
 ```
 module declares its path as: github.com/cucumber/godog
@@ -274,7 +307,7 @@ To fix it.
 > go get github.com/cucumber/godog/cmd/godog
 
 More details: [here](https://github.com/cucumber/godog/issues/211)
-##### Issue 2: Wrong path to working godog
+#### Issue 2: Wrong path to working godog
 
 **Behavior:** When you run command cucumber in Makefile
 ```
@@ -300,7 +333,7 @@ From:
 To: 
     cd godog ./
 ```
-#### Run godog
+### Run godog
 To run this godog for this project
 ```
 godog ./
@@ -310,19 +343,9 @@ To run with docker-compose
 ```
 make cucumber
 ```
-### Docker compose
-docker-compose.yml
-```
-version: '2'
-services:
-  mongodb:
-    image: mongo
-    ports:
-      - 27017:27017
-
-```
-When we run docker-compose up command, we will download the image of MongoDB and start an instance exposing these ports on our local host.
-
+## Run with Docker compose
+When we run docker-compose up command, we will download the image of MongoDB and start an instance exposing these ports on our local host.  
+To run it.
 ```
 make cucumber
 ```
@@ -353,7 +376,7 @@ docker-compose stop
 [+] Running 1/1
  - Container chapter4-mongodb-1  Stopped
 ```
-#### Start server
+### Start server
 To start this server with docker-compose.
 ```
 chapter4>make run
@@ -362,11 +385,11 @@ docker-compose up -d
  - Container chapter4-mongodb-1  Running                                                                                                                                                      0.0s 
 go run main.go
 ```
-#### How to run
+### How to run
 
 
-#### Issue knowledge
-##### Issue 1: Exists port on your machine
+### Issue knowledge
+#### Issue 1: Exists port on your machine
 **Behavior:** When you run command cucumber in Makefile
 ```
 make run
@@ -395,8 +418,8 @@ SUCCESS: The process with PID 276 has been terminated.
 ```
 To see the setting port. Refer: [here](https://github.com/huavanthong/build-microservice-golang/blob/docker-postgre/01_GettingStarted/book-build-microservice/chapter4/main.go)
 
-### Testing
-#### Unit Test
+## Testing
+### Unit Test
 To run Unit Test
 ```
 make unit
@@ -439,7 +462,7 @@ ok      docker-compose/handlers (cached)
 make: *** [unit] Error 2
 ```
 
-#### Cucumber Test
+### Cucumber Test
 To run Cucumber testing
 ```
 make test
@@ -483,8 +506,8 @@ make: *** [unit] Error 2
 
 ```
 
-#### Issue knowledge when compiler
-##### Issue 1: Wrong MINGW compiler architecture
+### Issue knowledge when compiler
+#### Issue 1: Wrong MINGW compiler architecture
 **Behavior:** When you run test
 ```
 make unit 
@@ -514,7 +537,7 @@ Step 2: Add to folder C:\MINGIW
 
 Step 3: Add path to C:\MinGW\mingw64\bin
 ```
-### Benchmarks
+## Benchmarks
 To run benchmark
 ```
 > go test -bench=. -benchmem
