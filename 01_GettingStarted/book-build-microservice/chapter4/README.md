@@ -248,7 +248,7 @@ Export PATH point to GOLANG environment
 #=============== Linux ===================#
 # the executable is here after installation
 # $GOPATH/bin/godog
-export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:$GOPATH
 
 #=============== Window ===================#
 set PATH=%PATH%;%GOPATH%
@@ -305,4 +305,70 @@ To run this godog for this project
 ```
 godog ./
 ```
+
+To run with docker-compose
+```
+make cucumber
+```
+### Docker compose
+docker-compose.yml
+```
+version: '2'
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+
+```
+When we run docker-compose up command, we will download the image of MongoDB and start an instance exposing these ports on our local host.
+
+```
+make cucumber
+```
+
+Output
+```
+chapter4> make cucumber
+docker-compose up -d
+[+] Running 1/0
+ - Container chapter4-mongodb-1  Running                                                                                                                                                                        0.0s 
+cd features && godog ./
+Feature: As a user when I call the search endpoint, I would like to receive a list of kittens
+Server running with pid: 26688
+  Scenario: Invalid query                       # search.feature:4
+    Given I have no search criteria             # search_test.go:33 -> iHaveNoSearchCriteria
+    When I call the search endpoint             # search_test.go:41 -> iCallTheSearchEndpoint
+    Then I should receive a bad request message # search_test.go:52 -> iShouldReceiveABadRequestMessage
+Server running with pid: 7868
+  Scenario: Valid query                     # search.feature:9
+    Given I have a valid search criteria    # search_test.go:60 -> iHaveAValidSearchCriteria
+    When I call the search endpoint         # search_test.go:41 -> iCallTheSearchEndpoint
+    Then I should receive a list of kittens # search_test.go:66 -> iShouldReceiveAListOfKittens
+
+2 scenarios (2 passed)
+6 steps (6 passed)
+9.205181s
+docker-compose stop
+[+] Running 1/1
+ - Container chapter4-mongodb-1  Stopped
+```
+#### How to run
+To run this docker-compose.
+```
+make run
+```
+### Benchmarks
+To run benchmark
+```
+> go test -bench=. -benchmem
+PASS
+ok      docker-compose  0.598s
+```
+
+One of the other nice features of benchmark tests is that we can run them and it outputs profiles which can be used with pprof:
+```
+go test -bench=. -cpuprofile=cpu.prof -blockprofile=block.prof -memprofile=mem.prof
+```
+
 

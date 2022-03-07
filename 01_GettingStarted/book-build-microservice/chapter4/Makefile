@@ -1,6 +1,6 @@
 cucumber:
 	docker-compose up -d
-	godog ./
+	cd features && godog ./
 	docker-compose stop
 
 run:

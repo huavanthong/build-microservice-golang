@@ -7,16 +7,28 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"syscall"
+	"testing"
 	"time"
 
 	"docker-compose/data"
-	"github.com/cucumber/godog/cmd/godog"
+
+	"github.com/cucumber/godog"
 )
 
 var criteria interface{}
 var response *http.Response
 var err error
+
+func TestMain(m *testing.M) {
+
+	status := godog.TestSuite{
+		Name:                 "chapter4",
+		TestSuiteInitializer: InitializeTestSuite,
+		ScenarioInitializer:  InitializeScenario,
+	}.Run()
+
+	os.Exit(status)
+}
 
 func iHaveNoSearchCriteria() error {
 	if criteria != nil {
@@ -62,6 +74,14 @@ func iShouldReceiveAListOfKittens() error {
 	return nil
 }
 
+/**************************************************************************
+The `Suite` is now considered deprecated and will be removed in `v0.11.0`.
+
+More details: please refer to release note
+    https://github.com/cucumber/godog/blob/main/release-notes/v0.10.0.md#suite-initializers
+***************************************************************************/
+
+/*
 func FeatureContext(s *godog.Suite) {
 	s.Step(`^I have no search criteria$`, iHaveNoSearchCriteria)
 	s.Step(`^I call the search endpoint$`, iCallTheSearchEndpoint)
@@ -78,6 +98,31 @@ func FeatureContext(s *godog.Suite) {
 	s.AfterScenario(func(interface{}, error) {
 		server.Process.Signal(syscall.SIGINT)
 	})
+
+	waitForDB()
+}
+*/
+
+func InitializeTestSuite(ctx *godog.TestSuiteContext) {
+
+}
+
+func InitializeScenario(ctx *godog.ScenarioContext) {
+	ctx.BeforeScenario(func(*godog.Scenario) {
+		clearDB()
+		setupData()
+		startServer()
+	})
+
+	ctx.Step(`^I have no search criteria$`, iHaveNoSearchCriteria)
+	ctx.Step(`^I call the search endpoint$`, iCallTheSearchEndpoint)
+	ctx.Step(`^I should receive a bad request message$`, iShouldReceiveABadRequestMessage)
+	ctx.Step(`^I have a valid search criteria$`, iHaveAValidSearchCriteria)
+	ctx.Step(`^I should receive a list of kittens$`, iShouldReceiveAListOfKittens)
+
+	// ctx.AfterScenario(func(interface{}, error) {
+	// 	server.Process.Signal(syscall.SIGINT)
+	// })
 
 	waitForDB()
 }
