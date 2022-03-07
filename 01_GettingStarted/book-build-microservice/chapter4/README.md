@@ -276,7 +276,7 @@ To fix it.
 More details: [here](https://github.com/cucumber/godog/issues/211)
 ##### Issue 2: Wrong path to working godog
 
-**Behavior:**When you run command cucumber in Makefile
+**Behavior:** When you run command cucumber in Makefile
 ```
 make cucumber
 ```
@@ -356,8 +356,43 @@ docker-compose stop
 #### How to run
 To run this docker-compose.
 ```
+chapter4>make run
+docker-compose up -d
+[+] Running 1/0
+ - Container chapter4-mongodb-1  Running                                                                                                                                                      0.0s 
+go run main.go
+```
+
+
+#### Issue knowledge
+##### Issue 1: Exists port on your machine
+**Behavior:** When you run command cucumber in Makefile
+```
 make run
 ```
+
+**Error:** You will see error below:
+```
+chapter4> make run
+docker-compose up -d
+[+] Running 1/1
+ - Container chapter4-mongodb-1  Started                                                                                                                                                      3.3s 
+go run main.go
+2022/03/07 15:18:07 listen tcp :8323: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted.
+exit status 1
+make: *** [run] Error 1
+```
+
+**Solution:** Find the exist port and kill it
+```
+chapter4>netstat -ano | findstr :8323
+  TCP    0.0.0.0:8323           0.0.0.0:0              LISTENING       276
+  TCP    [::]:8323              [::]:0                 LISTENING       276
+
+chapter4>taskkill /F /PID 276
+SUCCESS: The process with PID 276 has been terminated.
+```
+To see the setting port. Refer: [here](https://github.com/huavanthong/build-microservice-golang/blob/docker-postgre/01_GettingStarted/book-build-microservice/chapter4/main.go)
 ### Benchmarks
 To run benchmark
 ```
@@ -368,7 +403,7 @@ ok      docker-compose  0.598s
 
 One of the other nice features of benchmark tests is that we can run them and it outputs profiles which can be used with pprof:
 ```
-go test -bench=. -cpuprofile=cpu.prof -blockprofile=block.prof -memprofile=mem.prof
+chapter4> go test -bench=. -cpuprofile=cpu.prof -blockprofile=block.prof -memprofile=mem.prof
 ```
 
 
