@@ -1,3 +1,4 @@
+# Introduction
 This chapter 1 will help you understand some lesson below.  
 
 In this example, we are going to create an HTTP server with a single endpoint that returns static text represented by the JSON  
@@ -7,21 +8,29 @@ We will also examine how the routing works by adding a second endpoint that retu
 By the end of this chapter, you will have a fundamental grasp of the basic packages and how you can use them to quickly and
 efficiently build a simple microservice.  
 
-## Table of contents
+# Table of contents
 * [Building a simple web server with net/http](#Build-web-server) 
 * [Reading and writing json](#technologies)
 * [Routing in net/http](#Routing)
 * [Context](#Context)
 * [RPC in the Go standard library](#RPC)
 
-## Questions
+# Questions
+## About Reading and writing json
 * [Why we need to use Marshalling Go structs for json?](#Marshalling-Go-structs-to-JSON)
 * [How to use Marshalling for response?](#Demo-Marshalling)
 * [what if we need to read input before returning the output?](#Unmarshalling-JSON-to-Go-structs)
 * [What is format data of HTML Request](https://github.com/huavanthong/MasterGolang/blob/main/01_GettingStarted/book-go-web-application/Chapter_4_Processing_Requests/README.md#HTML-Form)
 * [How to decode JSON request from client?](#Demo-Unmarshalling)
+## About Routing in net/http
 * [Suppose you have a lot of images-css-js, how do you access it on golang?](#Static-file-handler)
+* [Could you give me a example for getting image](#get-a-image-from-static-file-handler)
+* []
+## About Handler, Chain Handler
 * [How to design a chain handler? Think about purpose for this design](#Creating-handlers)
+* [How do run with a handler?](#run-by-curl-using-get-method)
+* [Have you already known that validate often use for POST method?](#run-by-curl-using-post-method)
+## About context
 * [We get any trouble with HTTP Request? Why we need Context?](#Context)
 * [What is RPC?](#RPC)
 * [What is the default protocol in your DefaultServeMux ? Could you choose another protocol?](#Protocol)
@@ -206,11 +215,19 @@ The TimeoutHandler function returns a Handler interface that runs h with the giv
 ```
 
 ### Static-file-handler
-Try to run **reading_writing_json_5** to see problem:
+### Get a image from static file handler
+Try to run reading_writing_json_5 to see problem:
 ```
 > http://localhost:8080/cat/cat.jpg.
 ```
-Now we run **reading_writing_json_6** to see solution:
+Output
+```
+
+```
+More details: [reading_writing_json_5](https://github.com/huavanthong/build-microservice-golang/tree/master/01_GettingStarted/book-build-microservice/chapter1/reading_writing_json_5)
+
+### Example 2
+Now we run reading_writing_json_6 to see solution:
 ```
 > http://localhost:8080/cat/cat.jpg.
 ```
@@ -220,13 +237,46 @@ Success due to some code below:
 	http.Handle("/cat/", http.StripPrefix("/cat/", cathandler))
 ```
 ### Creating-handlers
-How to create handler. More detail refer: [here](https://github.com/huavanthong/MasterGolang/tree/main/01_GettingStarted/book-go-web-application/Chapter_3_Handling_Requests/handler)
+How to create handler.  
+More detail refer: [here](https://github.com/huavanthong/MasterGolang/tree/main/01_GettingStarted/book-go-web-application/Chapter_3_Handling_Requests/handler)  
 Please distinct the handler and function handler.
 * How to implement handler by pointer?
 * How to implement handler by value?
 * How to use chain handler?
-Refer, and read carefully for more details: **reading_writing_json_7**
 
+Refer, and read carefully for more details: 
+* [reading_writing_json_7](https://github.com/huavanthong/build-microservice-golang/tree/master/01_GettingStarted/book-build-microservice/chapter1/reading_writing_json_7)
+
+### Run reading_writing_json_7 example
+#### Run by CURL using GET method
+To run it, with normal handler using GET
+```
+> curl localhost:8080/hello
+Hello
+
+> curl -i -X GET localhost:8080/hello
+HTTP/1.1 200 OK
+Date: Sun, 13 Mar 2022 10:05:29 GMT
+Content-Length: 5
+Content-Type: text/plain; charset=utf-8
+
+Hello
+```
+
+#### Run by CURL using POST method
+To run it with chain handler using POST
+```
+curl -i -X POST -H "Content-Type: application/json" -d "{\"name\":\"Thong\"}" localhost:8080/helloworld
+```
+Output
+```
+HTTP/1.1 200 OK
+Date: Sun, 13 Mar 2022 10:00:19 GMT
+Content-Length: 20
+Content-Type: text/plain; charset=utf-8
+
+{"message":"Hello"}
+```
 ## Context
 The problem with the previous pattern is that there is no way that you can pass the validated request from one handler to the next without breaking the http.Handler interface.  
 This is a reason, Golang provide Context for our problem.  
@@ -264,7 +314,7 @@ func WithValue(parent Context, key interface{}, val interface{}) Context
 ```
 
 ### Using-contexts
-Refer: reading_writing_json_8
+Refer: [reading_writing_json_8](https://github.com/huavanthong/build-microservice-golang/tree/master/01_GettingStarted/book-build-microservice/chapter1/reading_writing_json_8)
 
 ## RPC
 Remote Procedure Call(RPC) in Operating System is a powerful technique for constructing distributed, client-server based applications.  
