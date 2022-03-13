@@ -1,3 +1,24 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"reflect"
+	"runtime"
+	"time"
+
+	"github.com/eapache/go-resiliency/retrier"
+)
+
+type helloWorldResponse struct {
+	Message string `json:"message"`
+}
+
+type helloWorldRequest struct {
+	Name string `json:"name"`
+}
+
 func main() {
 
 	// Define port at the begin of program
