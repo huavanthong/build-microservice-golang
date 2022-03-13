@@ -31,6 +31,7 @@ I am not talking about software design patterns like factories or facades, but a
 * [Beside using ConstantBackoff for Back off, do you know any else? What specification for this retrier package?](#specification-for-retrier-package)
 * [How to run this project - backoff in this example](#to-run-back-off-pattern)
 * [Could you implement backoff pattern on server project?](#implement-backoff-pattern-on-server)
+* [Right now, we can brainstorm your mind to remember how many design did you learn before?](#implement-backoff-pattern-on-server)
 ## About Circuite Breaking Pattern
 
 ## About Heath checks Pattern
@@ -80,6 +81,7 @@ To create a Back off Patter for your microservice, we follow steps:
 ```
 **Step 2:** Run our service with our backoff pattern.
 ```
+    n := 0
     err := r.Run(func() error {
         fmt.Println("Attempt: ", n)
         n++
@@ -140,7 +142,18 @@ Attempt:  3
 Failed
 ```
 ### Implement Backoff pattern on Server
-More details: [here](#)
+More details about source code: [here](https://github.com/huavanthong/build-microservice-golang/blob/feature/chapter5-BackOff/01_GettingStarted/book-build-microservice/chapter5/backoff/server.go)  
+Right now, we will summary how many design exist in this server.
+#### Implement function to get log
+
+#### Implement function to validate a http request from client.
+
+#### Using chain handler function in our server
+
+#### Using back off pattern in our server.
+
+### Using Marshalling and UnMarshalling for our server
+
 ## Circuite Breaking Pattern
 
 ## Heath checks Pattern
