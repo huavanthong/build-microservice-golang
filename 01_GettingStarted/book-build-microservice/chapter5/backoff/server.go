@@ -50,3 +50,17 @@ func main() {
 		fmt.Println(err)
 	}
 }
+
+func HelloWorldHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "Hello world\n")
+}
+
+// func log() is internal function, returns logging for work flow on program.
+func log(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		name := runtime.FuncForPC(reflect.ValueOf(h).Pointer()).Name()
+		fmt.Println("Handler function called - " + name)
+		h(w, r)
+	}
+}
+
