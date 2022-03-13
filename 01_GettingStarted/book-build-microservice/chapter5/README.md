@@ -70,6 +70,28 @@ require github.com/eapache/go-resiliency v1.2.0
 
 More details about project: [here](https://github.com/huavanthong/build-microservice-golang/tree/master/01_GettingStarted/book-build-microservice/chapter5/timeout)
 
+### Design for Timeout Pattern
+To create timeout for any service, we following steps below:
+**Step 1:** Use go-resiliency package to create a instance deadline to set timeout
+```
+dl := deadline.New(1 * time.Second)
+```
+**Step 2:** Use instance deadline to run our service
+```
+err := dl.Run(func(stopper <-chan struct{}) error {
+		slowFunction() <=============== This is our service
+		return nil
+	})
+```
+**Step 3:** Write a business logic to deal with this failure, such as retrying or sending a failure message back to the upstream service
+```
+	switch err {
+	case deadline.ErrTimedOut:
+		fmt.Println("Timeout")
+	default:
+		fmt.Println(err)
+	}
+```
 ### To run timeout pattern
 To run at slow case
 ```
