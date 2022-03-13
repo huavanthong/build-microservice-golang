@@ -19,6 +19,7 @@ efficiently build a simple microservice.
 ## About Reading and writing json
 * [Why we need to use Marshalling Go structs for json?](#Marshalling-Go-structs-to-JSON)
 * [How to use Marshalling for response?](#Demo-Marshalling)
+* [Coudl you use multiple Marshalling for response or not?](#multiple-marshalling)
 * [what if we need to read input before returning the output?](#Unmarshalling-JSON-to-Go-structs)
 * [What is format data of HTML Request](https://github.com/huavanthong/MasterGolang/blob/main/01_GettingStarted/book-go-web-application/Chapter_4_Processing_Requests/README.md#HTML-Form)
 * [How to decode JSON request from client?](#Demo-Unmarshalling)
@@ -55,6 +56,7 @@ To check this instance running on process.
 ```
 $ps -aux | grep 'go run
 ```
+More details, refer: [basic_http_server](https://github.com/huavanthong/build-microservice-golang/tree/master/01_GettingStarted/book-build-microservice/chapter1/basic_http_server)
 ## Json
 Thanks to the encoding /json [package](https://pkg.go.dev/encoding/json), which is built into the standard library encoding and decoding JSON to and from Go types is both fast and easy.
 It implements the simplistic Marshal and Unmarshal functions; however, if we need them, the package also provides Encoder and Decoder types that allow us greater control when reading and writing
@@ -95,7 +97,29 @@ func helloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(data))
 }
 ```
-##### Is there any better way to send our data to the output stream without marshalling to a temporary object before we return it?  
+#### Run Demo-Marshalling
+To run it
+```
+Open brower:
+> http://localhost:8080/helloworld
+
+Or open CMD:
+curl http://localhost:8080/helloworld
+```
+
+Output
+```
+{"Message":"Hello World"}
+```
+More details: [reading_writing_json_1](https://github.com/huavanthong/build-microservice-golang/tree/master/01_GettingStarted/book-build-microservice/chapter1/reading_writing_json_1)
+
+#### Multiple Marshalling
+More details: [reading_writing_json_2](https://github.com/huavanthong/build-microservice-golang/tree/master/01_GettingStarted/book-build-microservice/chapter1/reading_writing_json_2)
+#### Encoder for Marshalling
+If you familiar with Multiple Marshalling, maybe you ask the developer that:
+> Is there any better way to send our data to the output stream without marshalling to a temporary object before we return it? 
+
+The answer is yes !!!!!!!!!!!!!!  
 The encoding/json package has a function called NewEncoder this returns us an Encoder object that can be used to write JSON straight to an open writer and guess what?  
 Using Encode  
 ```
@@ -108,11 +132,12 @@ func helloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	encoder.Encode(response)
 }
 ```
+More details: [reading_writing_json_3](https://github.com/huavanthong/build-microservice-golang/tree/master/01_GettingStarted/book-build-microservice/chapter1/reading_writing_json_3)
 ### Unmarshalling-JSON-to-Go-structs
-> func Unmarshal(data []byte, v interface{}) error
-
+```
+	func Unmarshal(data []byte, v interface{}) error
+```
 This function will allocate maps, slices, and pointers as required  
-
 #### HTML-request-format
 More detail at [here](https://github.com/huavanthong/MasterGolang/blob/main/01_GettingStarted/book-go-web-application/Chapter_4_Processing_Requests/README.md#HTML-Form)
 * io.ReadCloser as a stream and does not return a []byte or a string
@@ -157,6 +182,49 @@ func helloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	encoder.Encode(response)
 }
 ```
+#### Run Demo-Unmarshalling
+To run it
+```
+Open brower:
+> http://localhost:8080/helloworld <=== Need to fix
+
+Or open CMD:
+curl -id "{\"name\":\"Thong\"}" 127.0.0.1:8080/helloworld
+```
+
+Output
+```
+HTTP/1.1 200 OK
+Date: Sun, 13 Mar 2022 15:04:15 GMT
+Content-Length: 26
+Content-Type: text/plain; charset=utf-8
+
+{"message":"Hello Thong"}
+```
+More details: [reading_writing_json_4](https://github.com/huavanthong/build-microservice-golang/tree/master/01_GettingStarted/book-build-microservice/chapter1/reading_writing_json_4)
+
+#### Decoder for UnMarshalling
+As the same as Marshalling, this also have a decoder object to decode all request from client.
+```
+func helloWorldHandler(w http.ResponseWriter, r *http.Request) {
+	var request helloWorldRequest
+
+	decoder := json.NewDecoder(r.Body)
+
+	err := decoder.Decode(&request)
+	if err != nil {
+		http.Error(w, "Bad request", http.StatusBadRequest)
+		return
+	}
+
+	response := helloWorldResponse{Message: "Hello " + request.Name}
+
+	encoder := json.NewEncoder(w)
+
+	encoder.Encode(response)
+}
+```
+More details: [reading_writing_json_5](https://github.com/huavanthong/build-microservice-golang/tree/master/01_GettingStarted/book-build-microservice/chapter1/reading_writing_json_5)
 
 ## Routing
 Even a simple microservice will need the capability to route requests to different handlers dependent on the requested path or
@@ -171,6 +239,19 @@ There are two functions to adding handlers to a ServerMux handler:
 > func Handle(pattern string, handler Handler)
 
 **More details:** [here](https://www.meisternote.com/app/note/tIRDBorhiJSC/3-3-handlers-and-handler-functions)
+
+### Run routing project with image
+To run it
+```
+Open brower:
+> http://localhost:8080/cat
+```
+
+Output
+```
+Image cat display on brower
+```
+More details: [reading_writing_json_6](https://github.com/huavanthong/build-microservice-golang/tree/master/01_GettingStarted/book-build-microservice/chapter1/reading_writing_json_6)
 
 ### Paths
 ServeMux is responsible for routing inbound requests to the registered handlers.  
