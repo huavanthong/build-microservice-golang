@@ -64,3 +64,35 @@ func log(h http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
+func HelloHandlerFunc(w http.ResponseWriter, r *http.Request) {
+
+	// Mistake 1: We can use ParseForm() because our server
+	fmt.Fprintln(w, r.ParseForm())
+	fmt.Fprintln(w, "Hello ", r.Form["name"])
+
+	// Mistake 2: We can't also use read body.
+	// len := r.ContentLength
+	// body := make([]byte, len)
+	// r.Body.Read(body)
+	// fmt.Fprintln(w, string(body))
+
+}
+
+// func valivate() is internal function, returns a message and error to user
+func validate(h http.HandlerFunc) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		var request helloWorldRequest
+		decoder := json.NewDecoder(r.Body)
+
+		err := decoder.Decode(&request)
+
+		if err != nil {
+			http.Error(w, "Bad request", http.StatusBadRequest)
+			return
+		}
+
+		h(w, r)
+	}
+}
