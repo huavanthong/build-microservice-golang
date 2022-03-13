@@ -11,6 +11,12 @@ import (
 	"github.com/eapache/go-resiliency/retrier"
 )
 
+type MessageResponse struct {
+	Code    int
+	Message string
+	Method  string
+}
+
 type helloWorldResponse struct {
 	Message string `json:"message"`
 }
