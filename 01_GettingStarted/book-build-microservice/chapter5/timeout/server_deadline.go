@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	port := 8080
+	port := "8080"
 
 	http.HandleFunc("/slow", makeNormalRequest)
 	http.HandleFunc("/timeout", makeTimeoutRequest)
