@@ -17,7 +17,11 @@ func main() {
 
 	fmt.Printf("Server starting on port %v\n", port)
 
-	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
+	err := http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
+	// Panic a entire server.
+	if err != nil {
+		panic(err.Error())
+	}
 
 }
 
@@ -39,6 +43,9 @@ func makeTimeoutRequest(w http.ResponseWriter, r *http.Request) {
 	case deadline.ErrTimedOut:
 		fmt.Println("Timeout")
 		fmt.Fprint(w, "Timeout\n")
+		// To abort a request from your client, we must use panic & recovery.
+		http.Error(w, "Timeout!", http.StatusBadRequest)
+		panic(http.ErrAbortHandler) // terminate request (and any more handlers in the chain)
 	default:
 		fmt.Println(err)
 		fmt.Fprint(w, err)

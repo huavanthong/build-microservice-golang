@@ -23,7 +23,8 @@ I am not talking about software design patterns like factories or facades, but a
 
 ## About Timeout Pattern
 * [Why do we need Timeout Pattern in Microservice?](#timeout-pattern)
-* [What is package for using timeout pattern?]
+* [What is package for using timeout pattern? go-resiliency or ?](#package-for-time-out-pattern)
+* [Could you use another package instead of go-resiliency](#)
 ## About Back off Pattern
 
 ## About Circuite Breaking Pattern
@@ -115,7 +116,12 @@ Output
 ```
 Loop:  0
 Timeout
-```
+``` 
+### Context package
+Package context defines the Context type, which carries deadlines, cancellation signals, and other request-scoped values across API boundaries and between processes. 
+More details: [here](https://pkg.go.dev/context)
+
+### Implement timeout using Context
 
 ## Back off Pattern
 
