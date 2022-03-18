@@ -49,6 +49,12 @@ I am not talking about software design patterns like factories or facades, but a
 
 ## Throttling Pattern
 
+### Getting Started with Throttling 
+To build this project.
+```
+go test
+```
+
 ## Service Discovery Pattern
 
 ## Load Balancing Pattern
