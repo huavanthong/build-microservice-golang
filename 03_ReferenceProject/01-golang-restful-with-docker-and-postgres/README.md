@@ -122,3 +122,58 @@ To fix it: refer [here](https://stackoverflow.com/questions/50757647/e-gnupg-gnu
 apt-get update && apt-get install -y gnupg
 ```
 ### Issue 2:
+**Behavior**: Run docker, but it can't find public key of gpg server.
+```
+> cd docker
+> docker-compose up
+```
+
+**Error**: 
+```
+=> ERROR [2/7] RUN  apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D                                                       20.6s 
+------
+ > [2/7] RUN  apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D:
+#11 0.527 Executing: /tmp/tmp.1WQpOKm71q/gpg.1.sh --keyserver
+#11 0.527 hkp://p80.pool.sks-keyservers.net:80
+#11 0.527 --recv-keys
+#11 0.527 58118E89F3A912897C070ADBF76221572C52609D
+#11 0.530 gpg: requesting key 2C52609D from hkp server p80.pool.sks-keyservers.net
+#11 20.55 ?: p80.pool.sks-keyservers.net: Host not found
+#11 20.55 gpgkeys: HTTP fetch error 7: couldn't connect: Connection timed out
+#11 20.56 gpg: no valid OpenPGP data found.
+#11 20.56 gpg: Total number processed: 0
+#11 20.56 gpg: keyserver communications error: keyserver unreachable
+#11 20.56 gpg: keyserver communications error: public key not found
+#11 20.56 gpg: keyserver receive failed: public key not found
+------
+failed to solve: rpc error: code = Unknown desc = executor failed running [/bin/sh -c apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D]: exit code: 2
+```
+
+**Root Cause**: 
+- Public key using in project is expired.
+- Public key maybe not exist.
+
+**Solution**: Add new key for file: Dockerfile-Postgres
+```
+Remove: 
+      # RUN  apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+
+
+Add: 
+      RUN set -ex \
+        && for key in \
+          9554F04D7259F04124DE6B476D5A82AC7E37093B \
+          94AE36675C464D64BAFA68DD7434390BDBE9B9C5 \
+          FD3A5288F042B6850C66B31F09FE44734EB7990E \
+          71DCFD284A79C3B38668286BC97EC7A07EDE3FC1 \
+          DD8F2338BAE7501E3DD5AC78C273792F7D83545D \
+          B9AE9905FFD7803F25714661B63B535A4C206CA9 \
+          C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8 \
+          56730D5401028683275BD23C23EFEFE93C4CFFFE \
+        ; do \
+          gpg --keyserver pgp.mit.edu --recv-keys "$key" || \
+          gpg --keyserver keyserver.pgp.com --recv-keys "$key" || \
+          gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" ; \
+        done
+```
+More details: [here](https://lifesaver.codes/answer/gpg-keyserver-timed-out)
