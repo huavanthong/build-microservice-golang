@@ -130,6 +130,7 @@ More details: [here](https://github.com/huavanthong/build-microservice-golang/bl
 * Hystrix is described as "a latency and fault tolerance library designed to isolate points of access to remote systems, services, and third-party libraries, stop cascading failure, and enable resilience in complex distributed systems where failure is inevitable."
 
 ### Hystrix from Github
+More details explanation: [here](https://dzone.com/articles/go-microservices-part-11-hystrix-and-resilience)
 > https://github.com/Netflix/Hystrix
 
 ## Heath checks Pattern
