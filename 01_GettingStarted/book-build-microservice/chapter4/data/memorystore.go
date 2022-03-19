@@ -19,13 +19,20 @@ var data = []Kitten{
 }
 
 // MemoryStore is a simple in memory datastore that implements Store
+// The reason, we need to create this struct is store a list of data Kitten
 type MemoryStore struct {
 }
 
 //Search returns a slice of Kitten which have a name matching the name in the parameters
+// We use pointer receiver to store a slice of Kitten
 func (m *MemoryStore) Search(name string) []Kitten {
+	// Create a slice of kitten because it don't specific size for array
+	// Another way to create a array in Go: var kittens [10]Kitten
+	// ==> It will initialize data = zero for all element in this array
 	var kittens []Kitten
 
+	// For loop in data, and select only second items in data.
+	// This solution: refer (https://www.meisternote.com/app/note/rO50hvzWccQN/for)
 	for _, k := range data {
 		if k.Name == name {
 			kittens = append(kittens, k)

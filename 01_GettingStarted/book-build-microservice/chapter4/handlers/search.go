@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/building-microservices-with-go/chapter4/data"
+	"docker-compose/data"
 )
 
 type searchRequest struct {

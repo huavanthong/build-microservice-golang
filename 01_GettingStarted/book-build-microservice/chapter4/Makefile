@@ -15,4 +15,4 @@ test: unit cucumber
 
 package:
 	go get -t ./...
-	go get github.com/DATA-DOG/godog/cmd/godog
+	go get github.com/cucumber/godog/cmd/godog

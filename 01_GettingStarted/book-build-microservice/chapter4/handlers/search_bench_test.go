@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/building-microservices-with-go/chapter4/data"
+	"docker-compose/data"
 )
 
 func BenchmarkSearchHandler(b *testing.B) {
