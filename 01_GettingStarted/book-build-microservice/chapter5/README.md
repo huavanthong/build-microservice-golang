@@ -42,8 +42,10 @@ I am not talking about software design patterns like factories or facades, but a
 * [Getting Started with Circuit Pattern in Golang?](#getting-started-with-circuit-pattern)
 * [What is the Hystix library from Netflix?](#hystix-library-from-netflix)
 
-## About Heath checks Pattern
-
+## About Health checks Pattern
+* [What is health check?](#heath-checks-pattern)
+* [Do you know that what features we need to apply health check?](#usage-of-health-check)
+* [Implement health check to measure time for any request](#getting-started-with-health-check)
 ## About Throttling Pattern
 * [What is Throttling Pattern?](#throttling-pattern)
 
@@ -327,7 +329,81 @@ More details: [here](https://github.com/huavanthong/build-microservice-golang/bl
 More details explanation: [here](https://dzone.com/articles/go-microservices-part-11-hystrix-and-resilience)
 > https://github.com/Netflix/Hystrix
 
-## Heath checks Pattern
+## Health checks Pattern
+* Health checks should be an essential part of your microservices setup. 
+* Every service should expose a health check endpoint which can be accessed by the consul or another server monitor. Health checks are important as they allow the process responsible for running the application to restart or kill it when it starts to misbehave or fail. 
+* Of course, you must be incredibly careful with this and not set this too aggressively.
+
+### Usage of Health check
+What you record in your health check is entirely your choice. However, I recommend you look at implementing these features:
+* Data store connection status (general connection state, connection pool status)
+* Current response time (rolling average)
+* Current connections
+* Bad requests (running average)
+
+### Getting Started with Health check
+We are defining two handlers one which deals with our main request at the path / and one used for checking the health at the path /health.
+```
+func main() {
+	ma = ewma.NewMovingAverage()
+
+	http.HandleFunc("/", mainHandler)
+	http.HandleFunc("/health", healthHandler)
+
+	http.ListenAndServe(":8080", nil)
+}
+```
+
+Implement a handler function with a health check
+```
+func mainHandler(rw http.ResponseWriter, r *http.Request) {
+	
+	startTime := time.Now()
+
+	if !isHealthy() {
+		respondServiceUnhealthy(rw)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+	fmt.Fprintf(rw, "Average request time: %f (ms)\n", ma.Value()/1000000)
+
+	duration := time.Now().Sub(startTime)
+	ma.Add(float64(duration))
+}
+```
+
+Create a mutex Lock for setting global varaible.
+```
+func respondServiceUnhealthy(rw http.ResponseWriter) {
+	rw.WriteHeader(http.StatusServiceUnavailable)
+
+	resetMutex.RLock()
+	defer resetMutex.RUnlock()
+
+	if !resetting {
+		go sleepAndResetAverage()
+	}
+}
+```
+
+Sleep to wait timeout, and reset values
+```
+func sleepAndResetAverage() {
+
+	resetMutex.Lock()
+	resetting = true
+	resetMutex.Unlock()
+
+	time.Sleep(timeout)
+	ma = ewma.NewMovingAverage()
+
+	resetMutex.Lock()
+	resetting = false
+	resetMutex.Unlock()
+}
+
+```
 
 ## Throttling Pattern
 Throttling is a pattern where you restrict the number of connections that a service can handle, returning an HTTP error code when this threshold has been exceeded. The full source code for this example can be found in the file throttling/limit_handler.go. The middleware pattern for Go is incredibly useful here: what we are going to do is to wrap the handler we would like to call, but before we call the handler itself, we are going to check to see if the server can honor the request. In this example, for simplicity, we are going only to limit the number of concurrent requests that the handler can serve, and we can do this with a simple buffered channel.
