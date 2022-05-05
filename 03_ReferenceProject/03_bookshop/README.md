@@ -12,10 +12,30 @@ go get github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
 ```
 More details: [here](https://github.com/fullstorydev/grpcurl)
 # Getting Started
-To get all of books in shop
+* To get all of books in shop
 ```
 grpcurl -plaintext localhost:8080 Inventory/GetBookList
 ```
 **Note:** 
 * gRPC defaults to TLS for transport. 
 * However, to keep things simple, I will be using the -plaintext flag with grpcurl so that we can see a human-readable response.
+
+* To get list
+```
+grpcurl -plaintext localhost:8080 list
+
+or
+
+grpcurl -import-path proto -proto bookshop.proto list
+```
+
+* To get list a service
+```
+grpcurl -plaintext localhost:8080 list Inventory
+```
+
+* To describe service
+```
+grpcurl -plaintext localhost:8080 describe Inventory.GetBookList
+```
+
