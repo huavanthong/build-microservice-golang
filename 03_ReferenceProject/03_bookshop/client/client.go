@@ -1,10 +1,9 @@
-package main
+package client
 
 import (
-	pb "bookshop/server/pb/inventory"
+	pb "bookshop/proto/pb"
 	"context"
 	"log"
-	"net/rpc"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -12,14 +11,14 @@ import (
 
 func CreateClient() *grpc.ClientConn {
 	// Dial creates a client connection to the given target
-	client, err := rpc.Dial("localhost:8080", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	client, err := grpc.Dial("localhost:1234", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatal("failed to connect %v", err)
 	}
 	return client
 }
 
-func PerformGetBookList(conn *grpc.ClientConn) pb.GetBookListResponse {
+func PerformGetBookList(conn *grpc.ClientConn) *pb.GetBookListResponse {
 
 	client := pb.NewInventoryClient(conn)
 
@@ -28,6 +27,7 @@ func PerformGetBookList(conn *grpc.ClientConn) pb.GetBookListResponse {
 		log.Fatalf("failed to get book list: %v", err)
 	}
 	log.Printf("book list: %v", bookList)
+
 	return bookList
 }
 
