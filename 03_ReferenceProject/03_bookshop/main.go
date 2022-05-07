@@ -1,30 +1,19 @@
 package main
 
 import (
-	"log"
-	"net"
-
-	pb "bookshop/server/pb"
-
+	"bookshop/client"
 	"bookshop/server"
-
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
+	"fmt"
 )
 
 func main() {
-	listener, err := net.Listen("tcp", ":8080")
-	if err != nil {
-		panic(err)
-	}
 
-	s := grpc.NewServer()
+	go server.StartServer()
 
-	b := server.NewBookshop()
+	c := client.CreateClient()
+	defer c.Close()
 
-	reflection.Register(s)
-	pb.RegisterInventoryServer(s, b)
-	if err := s.Serve(listener); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
+	reply := client.PerformGetBookList(c)
+
+	fmt.Println(reply)
 }

@@ -1,10 +1,42 @@
 package server
 
 import (
-	pb "bookshop/server/pb"
+	pb "bookshop/proto/pb"
 	"context"
+	"fmt"
 	"log"
+	"net"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
+
+// define port
+const port = 1234
+
+func main() {
+	log.Printf("Server starting on port %v\n", port)
+	StartServer()
+}
+
+func StartServer() {
+
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%v", port))
+	if err != nil {
+		log.Fatal(fmt.Sprintf("Unable to listen on given port: %s", err))
+	}
+	defer listener.Close()
+
+	gs := grpc.NewServer()
+
+	b := NewBookshop()
+
+	reflection.Register(gs)
+	pb.RegisterInventoryServer(gs, b)
+	if err := gs.Serve(listener); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
+}
 
 type Bookshop struct {
 	pb.UnimplementedInventoryServer
