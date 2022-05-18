@@ -5,7 +5,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/nats-io/nats"
+	nats "github.com/nats-io/nats.go"
 )
 
 type product struct {

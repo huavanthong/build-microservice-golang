@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/nats-io/nats"
+	nats "github.com/nats-io/nats.go"
 )
 
 var natsServer = flag.String("nats", "", "NATS server URI")
