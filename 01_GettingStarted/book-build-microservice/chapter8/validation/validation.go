@@ -43,8 +43,8 @@ type Coordinate struct {
 
 type WeatherData struct {
 	Index      int        `json:"id" validate:"required,gt=0"`
-	coordinate Coordinate `json:"coordinate"`
-	country    string     `json:"country"`
+	Coord 	   Coordinate `json:"coord"`
+	Country    string     `json:"country"`
 }
 
 func HandlerWeatherData(rw http.ResponseWriter, r *http.Request) {

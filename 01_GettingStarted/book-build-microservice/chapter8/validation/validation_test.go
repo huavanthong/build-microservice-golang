@@ -5,7 +5,9 @@ import (
 
 	"gopkg.in/go-playground/validator.v9"
 )
-
+/*******************************************************************************
+Test case for structure email
+*******************************************************************************/
 // Case 1: Test return error if a email is not exist in a request
 func TestErrorWhenRequestEmailNotPresent(t *testing.T) {
 	validate := validator.New()
@@ -74,5 +76,28 @@ func TestNoErrorWhenRequestNamePresentGreater(t *testing.T) {
 	// err != nil: validate return ok
 	if err := validate.Struct(&request); err == nil {
 		t.Error(err)
+	}
+}
+
+/*******************************************************************************
+Test case for structure weather data
+*******************************************************************************/
+// Case 1: Normal teset
+func TestNoErrorWithNormalWeatherData(t *testing.T) {
+	validate := validator.New()
+
+	weatherData := WeatherData {
+		Index : 1,
+		Coord: Coordinate{
+			Latitude: 8.85023121875,
+			Longitude: 103.904589453125,
+		},
+		Country: "Viet Nam",
+	}
+
+
+	// err == nil: validate return error
+	if err := validate.Struct(&weatherData); err != nil {
+		t.Error("Should have raised an error")
 	}
 }
