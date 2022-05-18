@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/nicholasjackson/building-microservices-in-go/chapter9/queue"
+	"queue"
 )
 
 type Product struct {
