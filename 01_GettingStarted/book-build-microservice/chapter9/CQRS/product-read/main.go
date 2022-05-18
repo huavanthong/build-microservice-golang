@@ -8,7 +8,7 @@ import (
 	"time"
 
 	memdb "github.com/hashicorp/go-memdb"
-	"github.com/nats-io/nats"
+	nats "github.com/nats-io/nats.go"
 )
 
 type productInsertedEvent struct {
