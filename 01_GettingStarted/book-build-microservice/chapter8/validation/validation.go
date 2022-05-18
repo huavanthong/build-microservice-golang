@@ -9,7 +9,7 @@ import (
 
 // Request defines the input structure received by a http handler
 type Request struct {
-	Name  string `json:"name"`
+	Name  string `json:"name" validate:"required,gt=0,lt=30"`
 	Email string `json:"email" validate:"email"`
 	URL   string `json:"url" validate:"url"`
 }
