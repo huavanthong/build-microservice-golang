@@ -33,3 +33,34 @@ func Handler(rw http.ResponseWriter, r *http.Request) {
 
 	rw.WriteHeader(http.StatusOK)
 }
+
+// Request defines the input structure of weather data
+
+type Coordinate struct {
+	Latitude  float32 `json:"latitude" validate:"latitude"`
+	Longitude float32 `json:"longitude" validate:"longitude"`
+}
+
+type WeatherData struct {
+	Index      int        `json:"id" validate:"required,gt=0"`
+	coordinate Coordinate `json:"coordinate"`
+	country    string     `json:"country"`
+}
+
+func HandlerWeatherData(rw http.ResponseWriter, r *http.Request) {
+	wd := WeatherData{}
+
+	err := json.NewEncoder(rw).Encode(&wd)
+	if err != nil {
+		http.Error(rw, "Invalid request object", http.StatusBadRequest)
+		return
+	}
+
+	err = validate.Struct(wd)
+	if err != nil {
+		http.Error(rw, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	rw.WriteHeader(http.StatusOK)
+}
