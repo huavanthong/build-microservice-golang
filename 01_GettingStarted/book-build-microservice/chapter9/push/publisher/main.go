@@ -9,7 +9,7 @@ import (
 	nats "github.com/nats-io/nats.go"
 )
 
-var natsServer = flag.String("nats", "", "NATS server URI")
+var natsServer = flag.String("nats", "4223", "NATS server URI")
 var natsClient *nats.Conn
 
 type product struct {
@@ -23,14 +23,17 @@ func init() {
 
 func main() {
 	var err error
+	// Connect to a server
 	natsClient, err = nats.Connect("nats://" + *natsServer)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer natsClient.Close()
 
+	// Implement http handler
 	http.DefaultServeMux.HandleFunc("/product", productsHandler)
 
+	// List to port
 	log.Println("Starting product write service on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", http.DefaultServeMux))
 }
@@ -51,5 +54,6 @@ func insertProduct(rw http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
+	// Simple Publisher
 	natsClient.Publish("product.inserted", data)
 }
